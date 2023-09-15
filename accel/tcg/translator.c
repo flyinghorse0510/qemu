@@ -18,9 +18,12 @@
 
 static void set_can_do_io(DisasContextBase *db, bool val)
 {
-    tcg_gen_st_i32(tcg_constant_i32(val), cpu_env,
-                   offsetof(ArchCPU, parent_obj.can_do_io) -
-                   offsetof(ArchCPU, env));
+    if (db->saved_can_do_io != val) {
+        db->saved_can_do_io = val;
+        tcg_gen_st_i32(tcg_constant_i32(val), cpu_env,
+                       offsetof(ArchCPU, parent_obj.can_do_io) -
+                       offsetof(ArchCPU, env));
+    }
 }
 
 bool translator_io_start(DisasContextBase *db)
@@ -29,10 +32,6 @@ bool translator_io_start(DisasContextBase *db)
 
     if (!(cflags & CF_USE_ICOUNT)) {
         return false;
-    }
-    if (db->num_insns == db->max_insns && (cflags & CF_LAST_IO)) {
-        /* Already started in translator_loop. */
-        return true;
     }
 
     set_can_do_io(db, true);
@@ -144,6 +143,7 @@ void translator_loop(CPUState *cpu, TranslationBlock *tb, int *max_insns,
     db->num_insns = 0;
     db->max_insns = *max_insns;
     db->singlestep_enabled = cflags & CF_SINGLE_STEP;
+    db->saved_can_do_io = -1;
     db->host_addr[0] = host_pc;
     db->host_addr[1] = NULL;
 
