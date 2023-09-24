@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
 struct DirectedMemTestEntry
 {
     uint64_t paddr;

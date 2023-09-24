@@ -19,11 +19,14 @@
 QEMU_PLUGIN_EXPORT int qemu_plugin_version = QEMU_PLUGIN_VERSION;
 
 static GString* outputDir = NULL;
+static void** memTraceArea = NULL;
 
 QEMU_PLUGIN_EXPORT int qemu_plugin_install(qemu_plugin_id_t id,
                                            const qemu_info_t *info,
                                            int argc, char **argv)
 {
+    fprintf(stdout, "StarFive MemTrace Plugin\n");
+    fprintf(stdout, "Installing plugin...\n");
     // Parse arguments
     for (int i = 0; i < argc; i++)
     {
@@ -32,16 +35,17 @@ QEMU_PLUGIN_EXPORT int qemu_plugin_install(qemu_plugin_id_t id,
         if (g_strcmp0(tokens[0], "dir") == 0) {
             outputDir = g_string_new(tokens[1]);
         } else {
-            fprintf(stderr, "Unknown plugin parameters: %s!\n", tokens[0]);
+            fprintf(stderr, "Unknown MemTrace plugin parameters: %s!\n", tokens[0]);
             return -1;
         }
     }
     
-    if (outputDir) {
-        outputDir = g_string_new("mem_trace/");
+    if (!outputDir) {
+        outputDir = g_string_new("mem_trace");
     }
     fprintf(stdout, "Memory trace files will be generated under %s\n", outputDir->str);
 
+    
     return 0;
 }
 
