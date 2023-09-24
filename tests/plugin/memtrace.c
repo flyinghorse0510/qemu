@@ -21,6 +21,24 @@ QEMU_PLUGIN_EXPORT int qemu_plugin_version = QEMU_PLUGIN_VERSION;
 static GString* outputDir = NULL;
 static void** memTraceArea = NULL;
 
+// Trigger when TB translation happens
+static void vcpu_tb_trans_trigger(qemu_plugin_id_t id, struct qemu_plugin_tb *tb)
+{
+    // Total instruction count
+    size_t insCount = qemu_plugin_tb_n_insns(tb);
+    for (size_t i = 0; i < insCount; i++) {
+        struct qemu_plugin_insn *insn = qemu_plugin_tb_get_insn(tb, i);
+        qemu_plugin_register_vcpu_mem_cb(
+            insn
+        );
+    }
+}
+
+// Trigger when instructions access memory
+static void vcpu_mem_trigger() {
+
+}
+
 QEMU_PLUGIN_EXPORT int qemu_plugin_install(qemu_plugin_id_t id,
                                            const qemu_info_t *info,
                                            int argc, char **argv)
