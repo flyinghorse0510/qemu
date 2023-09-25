@@ -2,6 +2,7 @@
 #define _MEM_TEST_DATA_H_
 
 #define MEM_TEST_ENTRY_MAX_REQ_BLK_SIZE (6)
+#define TRACE_MEM_MAP_INIT_SIZE (4096)
 
 #include <unistd.h>
 #include <stdint.h>
@@ -17,9 +18,15 @@ struct DirectedMemTestEntry
 };
 typedef struct DirectedMemTestEntry DirectedMemTestEntry;
 
-int create_data_file(const char *path);
-int open_data_file(const char *path);
-bool close_data_file(int fd);
+struct TraceMemMap
+{
+    DirectedMemTestEntry* trace;
+    unsigned long length;
+    unsigned long maxLength;
+};
+typedef struct TraceMemMap TraceMemMap;
+
+
 
 // Command string
 const char *cmdStrArray[] = {
