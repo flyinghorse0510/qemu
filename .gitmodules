@@ -45,4 +45,4 @@
 	url = https://gitlab.com/libvirt/libvirt-ci.git
 [submodule "starfive_mem_trace"]
 	path = starfive_mem_trace
-	url = git@github.com:flyinghorse0510/starfive_mem_trace.git
+	url = git@gitlab.starfivetech.com:sag/qemu_gem5_script.git
